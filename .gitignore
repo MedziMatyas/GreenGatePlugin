@@ -1,0 +1,11 @@
+*.class
+
+*.jar
+
+# IDE files and directories *
+.idea/
+out/
+GreenGate.iml
+
+# Temporary files #
+*~

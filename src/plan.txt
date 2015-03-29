@@ -1,0 +1,18 @@
+GreenGate cloning plugin for Geneious
+
+Goal:
+- The goal of the plugin is to be able to select all the constructs from which a new construct is to be made, using the GreenGate cloning method and to automatically assemble these into the final construct using a given, selectable enzyme.
+
+Sequence selection:
+- Sequences should be selected based on what is marked when the plugin is started. Further selection, or a change of the selected sequences should be possible from the open window of the plugin.
+
+Working method:
+- All of the selected constructs are cut with the enzyme and the needed fragment is selected. This fragment should be the one, which does not contain the recognition sequence of the enzyme anymore. It might be possible to offer the option to select another fragment manually. The destination vector should be selected beforehand. A checkbox or similar is perfect for this.
+- Once all the fragments needed are acquired, the first overhang of the destination vector is determined and the fragment containing the matching overhang found and connected to the destination vector. Then the other overhang of the matching fragment is determined. If this matches the destination vector the procedure is finished. Otherwise the rest of the fragments are searched for a matching overhang. The matching fragment is then connected and its other overhang determined. This is continued until the vector can be closed or there are no fragments left. In case of the later, an error is reported. Otherwise the closed, circular constructs is stored.
+- To transfer annotations, the annotations present on the fragments (and on the destination vector) have to be written to the new document. Make this a copy of the destination fragment so those annotations are already included. The new ones need to be transferred one by one, by finding full annotations present on the selected fragments and finding their location on the new plasmid and adding it there.
+
+To do and to look into:
+- How can I get all the selected documents?
+- How can I request the selection of new documents?
+- How can I request the selection of new documents not in the database?
+

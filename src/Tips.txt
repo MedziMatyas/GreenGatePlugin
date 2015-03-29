@@ -1,0 +1,44 @@
+Unfortunately our digest operation is not set up that well for scripting. What you need to do is annotate your sequence
+with "restriction site" type annotations for the enzymes you want to use then run our digest operation on that with
+default options. Here is an example BsaI restriction site which the digest operation will recognize:
+
+SequenceAnnotation anno = new SequenceAnnotation("BsaI", "restriction site");
+anno.addQualifier("Recognition pattern", "GGTCTC(1/5)");
+anno.addInterval(new SequenceAnnotationInterval(472,477));
+
+Alternatively you can digest the sequence manually using SequenceExtractionUtilities or by creating new sequence
+documents from scratch.
+
+
+
+June 24, 2014, 03:38
+Weixi Liao
+None (private email)
+Thanks, but I meet a new problem.
+
+I add the annotations of "restriction site", and it works tested by "Digest ..." in "workflow", but when I call "performOperation", it fails.
+
+DocumentOperation digest=PluginUtilities.getDocumentOperation("com.biomatters.plugins.restrictionAnalysis.DigestOperation");
+
+List<AnnotatedPluginDocument> list=digest.performOperation(doclist, ProgressListener.EMPTY, digest.getOptions(doclist));
+
+
+
+Is there anything wrong?
+
+
+
+June 24, 2014, 21:23
+Richard Moir
+Biomatters
+
+Are you getting the assertion about running in the swing thread? If so, you need to invokeAndWait like this:
+
+DocumentOperation digest=PluginUtilities.getDocumentOperation("com.biomatters.plugins.restrictionAnalysis.DigestOperation");
+final AtomicReference<Options> options = new AtomicReference<Options>();
+ThreadUtilities.invokeNowOrWait(new Runnable() {
+  public void run() {
+    options.set(digest.getOptions(doclist));
+  }
+});
+List<AnnotatedPluginDocument> list=digest.performOperation(doclist, ProgressListener.EMPTY, options.get());
