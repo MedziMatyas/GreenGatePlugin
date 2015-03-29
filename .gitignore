@@ -6,6 +6,7 @@
 .idea/
 out/
 GreenGate.iml
+META-INF/
 
 # Temporary files #
 *~
