@@ -82,9 +82,10 @@ public class GreenGatePlugin extends GeneiousPlugin {
         public List<AnnotatedPluginDocument> performOperation(AnnotatedPluginDocument[] docs, ProgressListener progress, Options options) {
             seqAssembler = new SequenceAssembler();
             AnnotatedPluginDocument[] vectors = GGOptions.getWorkingDocuments();
+            Enzyme digestionEnzyme = GGOptions.getEnzyme();
             List<AnnotatedPluginDocument> results = new LinkedList<AnnotatedPluginDocument>();
             try {
-                results = seqAssembler.performCloning(Enzyme.ECO31I, Arrays.asList(vectors));
+                results = seqAssembler.performCloning(digestionEnzyme, Arrays.asList(vectors));
             } catch (DocumentOperationException e) {
                 Dialogs.showMessageDialog("GreenGate cloning failed.\n" + "Error:\n" + e.getMessage());
                 e.printStackTrace();

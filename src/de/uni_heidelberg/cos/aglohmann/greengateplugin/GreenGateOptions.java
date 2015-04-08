@@ -26,6 +26,7 @@ public class GreenGateOptions extends Options implements ActionListener {
         workingDocuments = new AnnotatedPluginDocument[numEntries];
         vectorNames = new StringOption[numEntries];
         deleteThis = new ButtonOption[numEntries];
+        EnzymeType[] enzymeList = new EnzymeType[Enzyme.values().length];
 
         //Fill up the document storage array
         for (int i = 0; i < numEntries; i++) {
@@ -34,6 +35,12 @@ public class GreenGateOptions extends Options implements ActionListener {
             } else {
                 workingDocuments[i] = null;
             }
+        }
+
+        //Set up enzyme list array
+        for (int i = 0; i < Enzyme.values().length; i++) {
+            Enzyme e = Enzyme.values()[i];
+            enzymeList[i] = new EnzymeType(e.dispName(), e.name());
         }
 
         //Setup view and default values.
@@ -58,11 +65,19 @@ public class GreenGateOptions extends Options implements ActionListener {
         addDocument = addButtonOption("addDocument", "", "Add sequences");
         endAlignHorizontally();
 
+        enzymeSelection = addComboBoxOption("enzyme", "Enzyme", enzymeList, enzymeList[0]);
+
         //Setup listeners for changes and actions
         for (int i = 0; i < numEntries; i++) {
             deleteThis[i].addActionListener(this);
         }
+        //TODO: test if works
         addDocument.addActionListener(this);
+//        getAdditionalDocuments.addChangeListener(new SimpleListener(){
+//            public void objectChanged() {
+//                addDocument();
+//            }
+//        });
 
         //Fill in the vector names that are already selected
         setVectorNames();
@@ -133,10 +148,12 @@ public class GreenGateOptions extends Options implements ActionListener {
     public AnnotatedPluginDocument[] getWorkingDocuments() {
         int size = getNumCurrent();
         AnnotatedPluginDocument[] results = new AnnotatedPluginDocument[size];
-        for (int i = 0; i < size; i++) {
-            results[i] = workingDocuments[i];
-        }
+        System.arraycopy(workingDocuments, 0, results, 0, size);
         return results;
+    }
+
+    public Enzyme getEnzyme() {
+        return enzymeSelection.getValue().getEnzyme();
     }
 
     @Override
@@ -181,7 +198,19 @@ public class GreenGateOptions extends Options implements ActionListener {
         return true;
     }
 
-    //The max number of entries the program handles. Determined arbitrarily.
+    public static final class EnzymeType extends Options.OptionValue {
+        public EnzymeType(String name, String label) {
+            super(name, label, "");
+            e = Enzyme.valueOf(label);
+        }
+        public Enzyme getEnzyme() {
+            return e;
+        }
+        Enzyme e;
+    }
+
+    //The max number of entries the program handles. Determined arbitrarily based upon how many constructs we planed our
+    //+GreenGate cloning strategy for.
     private static final int numEntries = 7;
 
     private StringOption[] vectorNames;
@@ -189,4 +218,5 @@ public class GreenGateOptions extends Options implements ActionListener {
     private ButtonOption addDocument;
     private AnnotatedPluginDocument[] workingDocuments;
     private DocumentSelectionOption getAdditionalDocuments;
+    private ComboBoxOption<EnzymeType> enzymeSelection;
 }
